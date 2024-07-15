@@ -6,8 +6,9 @@
 
 # Snippet
 
-1. Go to client/fuel_cl.lua & Navigate until you see this chunk of code.
+1. Go to client/fuel_cl.lua & Navigate until you find this
 
+```
 CreateThread(function()
 	local bones = {
 		"petroltank",
@@ -233,101 +234,5 @@ CreateThread(function()
 		})
 	end
 end)
-
-2. Replace the code chunk with the one below.
-
-CreateThread(function()
-	for _, model in ipairs(props) do
-		exports.interact:AddModelInteraction({
-			model = model,
-			name = 'CDN:GasPumpInteraction',
-			id = 'CDN:GasPumpInteraction',
-			offset = vec3(0.0, 0.0, 1.0),
-			distance = 5.0,
-			interactDst = 2.5,
-			options = {
-				{
-					label = Lang:t("grab_nozzle"),
-					action = function()
-						if PlayerInSpecialFuelZone then return end
-						if not IsPedInAnyVehicle(PlayerPedId()) and not holdingnozzle and not HoldingSpecialNozzle and inGasStation == true and not PlayerInSpecialFuelZone then
-							TriggerEvent("cdn-fuel:client:grabnozzle")
-						end
-					end,
-				},
-				{
-					label = Lang:t("buy_jerrycan"),
-					action = function()
-						if not IsPedInAnyVehicle(PlayerPedId()) and not holdingnozzle and not HoldingSpecialNozzle and inGasStation == true then
-							TriggerEvent("cdn-fuel:client:purchasejerrycan")
-						end
-					end,
-				},
-				{
-					label = Lang:t("return_nozzle"),
-					canInteract = function()
-						if holdingnozzle and not refueling then
-						return true
-						end
-					end,
-					action = function()
-						if holdingnozzle and not refueling then
-							TriggerEvent("cdn-fuel:client:returnnozzle")
-						end
-					end,
-				},
-				{
-					label = Lang:t("grab_special_nozzle"),
-					canInteract = function()
-						if not HoldingSpecialNozzle and not IsPedInAnyVehicle(PlayerPedId()) and PlayerInSpecialFuelZone then
-						return true
-						end
-					end,
-					action = function()
-						if Config.FuelDebug then print("Is Player In Special Fuel Zone?: "..tostring(PlayerInSpecialFuelZone)) end
-						if not HoldingSpecialNozzle and not IsPedInAnyVehicle(PlayerPedId()) and PlayerInSpecialFuelZone then
-							TriggerEvent("cdn-fuel:client:grabnozzle:special")
-						end
-					end,
-				},
-				{
-					label = Lang:t("return_special_nozzle"),
-					canInteract = function()
-						if HoldingSpecialNozzle and not IsPedInAnyVehicle(PlayerPedId()) then
-						return true
-						end
-					end,
-					action = function()
-						if HoldingSpecialNozzle and not IsPedInAnyVehicle(PlayerPedId()) then
-							TriggerEvent("cdn-fuel:client:returnnozzle:special")
-						end
-					end,
-				},
-			}
-		})
-
-		exports.interact:AddGlobalVehicleInteraction({
-			id = 'CDN:InsertNozzleInteraction',
-			offset = vec3(0.0, 0.0, 0.0),
-			bone = bones,
-			distance = 5.0,
-			interactDst = 5.0,
-			options = {
-				{
-					canInteract = function(entity, coords, args)
-						if inGasStation and not refueling and holdingnozzle then
-						return true
-						end
-					end,
-					label = Lang:t("input_insert_nozzle"),
-					action = function()
-						TriggerEvent('cdn-fuel:client:RefuelMenu')
-					end
-				},
-			}
-		})
-	end
-end)
-
-3. Restart CDN-Fuel & You should be good to go.
+```
 
